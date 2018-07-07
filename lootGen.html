@@ -1,0 +1,452 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>LootGen</title>
+		<style>
+			#result div{
+				overflow: hidden;
+			}
+			.gold{
+				color:black;
+			}
+			.decoObject{
+				color:black;
+			}
+			.adventureObject{
+				color:black;
+			}
+			.alchemyObject{
+				color:black;
+			}
+			.potions{
+				color:black;
+			}
+			.scrolls{
+				color:black;
+			}
+			.weapon{
+				color:black;
+			}
+			.armour{
+				color:black;
+			}
+			.magicOject{
+				color:black;
+			}
+			.specialObject{
+				background-color:#3fb315;
+			}
+			.baka{
+				margin: auto;
+				width:100%;
+				text-align: center;
+				padding-top:3em;
+				font-weight:900;
+				font-size:50px;
+				font-family:Arial;
+				color:red;
+			}
+			.h3,h4{
+				margin-bottom: 0.5em;
+			}
+			ul.dash {
+				list-style: none;
+				margin-left: 0;
+				margin-top: 0.5em;
+				margin-bottom: 1em;
+				padding-left: 1em;
+			}
+			ul.dash > li:before {
+				display: inline-block;
+				content: "-";
+				width: 1em;
+				margin-left: -1em;
+			}
+			#result{
+				margin: auto;
+				max-width: 50%;
+			}
+			#generate{
+				margin: auto;
+				max-width: 50%;
+				text-align: center;
+			}
+			input[type="number"] {
+				width:3em;
+				margin-left:0.5em;
+				margin-right:1em;
+			}
+		</style>
+	</head>
+	<body>
+	<div id='generate'>
+		<label for="nbLoot">Nombre de loots max</label>
+		<input type="number" id="nbLoot" value="9" min="1"/>
+		<input type='button' onclick="generate()" value="Génerate"/>
+		<input type="number" id="nbRoll" value="3" min="1"/>
+		<input type='button' onclick="roll()" value="Roll"/>
+		<span id='roll'></span>
+	</div>
+	<div id='result'></div>
+	<script>
+	var w = Date.now();
+	var x = 362436069;
+	var y = 521288629;
+	var z = 88675123;
+	function rand(value,fromOne = 1){
+		function xs128next() 
+		{
+			var t = x ^ (x << 11);
+			x = y; y = z; z = w;
+			return w = w ^ (w >> 19) ^ t ^ (t >> 8);
+		}
+
+		function xs128nextrange(min, max)
+		{
+			return xs128next() % (max + 1 - min) + min;
+		}
+
+		function xs128seed(seed)
+		{
+			w = seed;
+		}
+		if (fromOne == 1){
+			return xs128nextrange(fromOne, value);
+		}else{
+			return xs128nextrange(fromOne, value-1);
+		}
+	}
+	
+	function roll(){
+	console.log(document.getElementById('nbRoll').value)
+		document.getElementById('roll').innerHTML = rand(parseInt(document.getElementById('nbRoll').value));
+	}
+	
+	var lootTable = new Array();
+	for(var dice = 1;dice <= 100; dice++){
+		if(dice <= 20 ){lootTable[dice] = ['Gold','gold'];}
+		if(dice > 20 && dice <= 30 ){lootTable[dice] = ['Objet de décoration','decoObject'];}
+		if(dice > 30 && dice <= 40 ){lootTable[dice] = ['Objet d\'aventurier','adventureObject'];}
+		if(dice > 40 && dice <= 50 ){lootTable[dice] = ['Objet d\'alchimie','alchemyObject'];}
+		if(dice > 50 && dice <= 60 ){lootTable[dice] = ['Potions','potions'];}
+		if(dice > 60 && dice <= 70 ){lootTable[dice] = ['Parchemins','scrolls'];}
+		if(dice > 70 && dice <= 80 ){lootTable[dice] = ['Armes','weapon'];}
+		if(dice > 80 && dice <= 90 ){lootTable[dice] = ['Armures','armour'];}
+		if(dice > 90 && dice <= 99 ){lootTable[dice] = ['Objet Magique','magicOject'];}
+		if(dice == 100 ){lootTable[dice] = ['Objet spéciaux','specialObject'];}
+	}
+
+	var gemTable = new Array();
+	for(var dice = 1;dice <= 100; dice++){
+		if(dice <= 25 ){gemTable[dice] = ['10 po',['Agate (mousse ou xyloïde)', 'Azurite', 'Hématite', 'Lapis-Lazuli', 'Malachite', 'Obsidienne', 'Œil-De-Chat', 'Œil-De-Tigre', 'Perle (Irrégulière)', 'Quartz Bleu', 'Rhodochrosite', 'Turquoise']];}
+		if(dice > 25 && dice <= 50 ){gemTable[dice] = ['50 po',['Calcédoine', 'Chrysoprase', 'Citrine', 'Cordiérite', 'Cornaline', 'Cristal De Roche (Quartz Limpide)', 'Héliotrope', 'Jaspe', 'Onyx', 'Onyx Marbre', 'Péridot', 'Pierre de Lune', 'Quartz (Rose, Laiteux ou Rutilé)', 'Sardoine', 'Zircon']];}
+		if(dice > 50 && dice <= 70 ){gemTable[dice] = ['100 po',['Ambre', 'Améthyste', 'Chrysobéryl', 'Corail', 'Grenat (Rouge Ou Brun Vert)', 'Jade', 'Jais', 'Perle (Blanche, Dorée, Rose Ou Argentée)', 'Spinelle (Rouge, Brun Rouge ou Vert Sombre)', 'Tourmaline']];}
+		if(dice > 70 && dice <= 90 ){gemTable[dice] = ['200 po',['Aigue-Marine', 'Alexandrite', 'Grenat Almandin', 'Perle Noire', 'Spinelle Bleu Nuit', 'Topaze Jaune D\'Or']];}
+		if(dice > 90 && dice <= 99 ){gemTable[dice] = ['400 po',['Corindon (Jaune Ambré ou Pourpre)', 'Émeraude', 'Opale (Blanche, Noire ou de Feu)', 'Rubis', 'Saphir Bleu Ou Noir']];}
+		if(dice == 100 ){gemTable[dice] = ['1500',['Diamant (Limpide, Jaune, Rose, Brun ou Bleu)', 'Émeraude (Pure)', 'Hyacinthe']];}
+	}
+	
+	var manaGemTable = new Array();
+	for(var dice = 1;dice <= 100; dice++){
+		if(dice <= 25 ){manaGemTable[dice] = ['100 po',''];}
+		if(dice > 25 && dice <= 50 ){manaGemTable[dice] = ['150 po',''];}
+		if(dice > 50 && dice <= 70 ){manaGemTable[dice] = ['200 po',''];}
+		if(dice > 70 && dice <= 90 ){manaGemTable[dice] = ['400 po',''];}
+		if(dice > 90 && dice <= 99 ){manaGemTable[dice] = ['1500 po',''];}
+		if(dice == 100 ){manaGemTable[dice] = ['3000',''];}
+	}
+	
+	var currentWeapon = ['Ceste','Coup-de-poing américain','Dague','Dague coup-de-poing','Gantelet','Gantelet clouté','Goupillon de combat','Masse d’armes légère','Pieu de bois','Serpe','Épieu','Gourdin','Masse d\'armes lourde','Morgenstern','Baïonnette','Bâton','Lance','Lance d\'arrêt','Pique','Arbalète légère','Arbalète lourde','Fléchette','Fronde','Javeline','Sarbacane'];
+	var warWeapon = ['Armure à pointes','Épée courte','Hache de lancer','Hachette','Kukri','Lamétoile','Matraque','Marteau léger','Pic de guerre, léger','Canne épée','Cimeterre','Écu à pointes','Épée longue','Fléau d’armes léger','Hache d\'armes','Marteau de guerre','Pic de guerre lourd','Rapière','Trident','Bardiche','Bec de corbin','Cimeterre à deux mains','Corsèque','Coutille','Épée à deux mains','Faux','Fléau d’armes lourd','Glaive-guisarme','Grande hache','Guisarme','Hallebarde','Lance d’arçon','Marteau de Lucerne','Massue','Vouge','Arc court','Arc court composite','Arc long','Arc long composite','Flèche à tête ronde (20)','Flèche de fumée','Flèche de vol (20)','Chakram','Pilum'];
+	var exotiqueWeapon = ['Dague brise-épée','Kama','Nunchaku','Sai','Siangham','Épée bâtarde','Épée de duel','Épée du temple','Falcata','Fouet','Hache de guerre naine','Khopesh','Sabre dentelé','Chaîne cloutée','Double-lame','Écharpe tranchante','Fléau double','Hache double orque','Happe-vilain','Lame elfique incurvée','Lance à chaîne','Marteau-piolet gnome','Urgrosh nain','Arbalète de poing','Arbalète double','Arbalète légère à répétition','Arbalète lourde à répétition','Bâton de jet halfelin','Bolas','Bolas tribaux','Boomerang','Filet','Lasso','Shuriken (5)'];
+	var orientalWarWeapon = ['Couteau papillon','Fléchettes wushu (5)','Jitte','Karambit','Lungchuan tamo','Pinceau de fer','Shang gou','Tonfa','Épée à neuf anneaux','Sabre double ergot de poulet','Sibat','Épée à triple pointe et double tranchant','Fourche du tigre','Getsugasan','Lance crochue','Naginata','Nodachi','Sansetsukon','Tube à flèches','Étui en bambou (10)','Flèches de longue distance à tête de fer (20)','Flèches sifflantes (20)','Sable empoisonné'];
+	var orientalExoticWeapon = ['Dan bong','Emeici','Éventail de combat','Tekko-kagi (griffe de fer)','Wakizashi','Fouet en neuf parties','Katana','Urumi','Bâton au deux katanas','Bô','Chaîne à deux kamas','Épée à sept branches','Kusarigama (kama et chaîne)','Kyoketsu shoge','Marteau météore','Tetsubo','Sheng biao'];
+	var gladiatorWarWeapon = ['Gladius','Scizore','Amentum','Javeline'];
+	var gladiatorExoticWeapon = ['Aklys','Fouet scorpion','Hache de poing','Madu d’acier','Madu de cuir','Pata','Quadrens','Sica','Hache crochue','Shotel','Lame volante','Bouclier de lancer'];
+	var fireWeapon = ['Dague pistolet','Pistolet','Pistolet canne épée','Pistolet à double canon','Pistolet dragon','Pistolet de poche','Poivrière','Targe pistolet','Arquebuse double','Couleuvrine','Hache mousquet','Lance-flammes','Marteau mousquet','Mousquet','Mousquet à double canon','Tromblon','Revolver','Fusil','Fusil de chasse','Fusil de chasse à double canon','Fusil poivrière'];
+	
+	var ligthArmour = ['Armure cérémonielle de soie','Armure de bois','Armure de cuir','Armure de cuir cloutée','Armure de parade','Armure lamellaire (cuir)','Armure matelassée','Chemise de mailles','Cuirasse lamellaire','Haramaki','Vêtements rembourrés',]
+	var mediumArmour = ['Armure à quatre miroirs','Armure de la montagne','Armure d\'écailles','Armure en peau','Armure lamellaire (acier)','Armure lamellaire (corne)','Cotte de mailles','Cuirasse','Cuirasse flexible ou agile','Do-maru','Kikko','Veste renforcée']
+	var heavyArmour = ['Armure de plaques','Armure de plaques flexible','Armure lamellaire (fer)','Armure lamellaire (pierre)','Clibanion','Crevice','Harnois','Kusari Gusoku','Manteau de pierre','O-yoroï','Plate de pierre','Tatami-do']
+	var sheild = ['Écu (acier)','Écu (bois)','Klar','Madu (acier)','Madu (cuir)','Pavois4','Rondache (acier)','Rondache (bois)','Rondache de preste usage (acier)','Rondache de preste usage (bois)','Targe']
+	
+	var bodyPart = [['Sur la tête','une couronne, un casque, un couvre-chef, un masque ou un diadème'],['Sur le front','un bandeau ou un phylactère'],['Devant les yeux','des lentilles, un monocle ou une paire de lunettes'],['Autour du cou','une amulette, une broche, un charme, un collier, un médaillon ou un scarabée'],['Sur les épaules','une cape, une écharpe ou un manteau'],['Sur le torse','une chasuble, une chemise, un gilet ou une veste'],['Sur le corps','un manteau ou une robe'],['Autour de la taille','une ceinture ou un ceinturon'],['Sur les bras ou les poignets','une paire de bracelets'],['Aux mains','une paire de gants ou de gantelets'],['Aux pieds','une paire de bottes ou de chaussures'],['Aux doigts','anneaux']];
+	var material = ['Aiguille à coudre;5 pa;—','Aimant;5 pa;250 g','Anneau à compartiment secret;20 po;-','Ardoise;1 po;1 kg','Attache d\'arme;1 pa;-','Bélier portable;10 po;10 kg','Billes;1 pa;1 kg','Bois de chauffage (pour un jour);1 pc;10 kg','Bouchons d\'oreilles;3 pc;-','Bougie;1 pc;—','Bouée, de qualité;10 po;15 kg','Bouée, normale;5 po;8 kg','Bouteille de vin en verre;2 po;—','Cadena Simple;20 po;500 g','Cadena Moyen;40 po;500 g','Cadena Bon;80 po;500 g','Cadena Excellent;150 po;500 g','Chaîne, 3 m;30 po;1 kg','Chausse-trappes;1 po;1 kg','Chevalière;5 po;—','Chope en terre cuite;2 pc;500 g','Cire à cacheter;1 po;500 g','Clepsydre;1 000 po;100 kg','Cloche;1 po;—','Coffre Petit;2 po;12,5 kg','Coffre Moyen;5 po;25 kg','Coffre Grand;10 po;50 kg','Coffre Très grand;25 po;125 kg','Combinaison anti-essaim;20 po;5 kg1','Corde en chanvre, 15 m;1 po;5 kg','Corde en soie, 15 m;10 po;2,5 kg','Corde en soie d\'araignée, 15 m;100 po;2 kg','Corne d\'alerte;1 po;1 kg1','Couverture;2 pa;500 g1','Couverture d’hiver;5 pa;1,5 kg1','Craie, morceau;1 pc;—','Cruche en terre cuite;2 pc;2,5 kg','Échelle, 3 m;5 pc;10 kg','Encre, la fiole;8 po;—','Étui à cartes ou à parchemins;1 po;250 g','Feuille de papier;4 pa;—','Feuille de papier de riz;5 pc;—','Ficelle, 15 m;1 pc;250 g','Filet à papillons;10 po;1 kg1','Filet de pêche, 2,5 m2;4 po;2,5 kg','Fiole pour encre ou potion;1 po;50 g','Flasque (vide);3 pc;2,25 kg','Grappin;1 po;2 kg','Hameçon;1 pa;—','Huile, la flasque;1 pa;500 g','Jarre en terre cuite;3 pc;4,5 kg','Lampe;1 pa;500 g','Lanterne à capote;7 po;1 kg','Lanterne sourde;12 po;1,5 kg','Longue-vue;1000 po;500 g','Lunettes à verre fumé;10 po;-','Marteau;5 pa;1 kg','Masse;1 po;5 kg','Menottes;15 po;1 kg','Menottes de qualité supérieure;50 po;1 kg','Outre;1 po;2 kg1','Paillasse;1 pa;2,5 kg1','Palan;5 po;2,5 kg','Panier (vide);4 pa;500 g','Papier, la feuille;4 pa;—','Parchemin, la feuille;2 pa;—','Pelle;2 po;4 kg','Perche, 3 m;5 pc;4 kg','Périscope;20 po;2 kg','Petit miroir en acier;10 po;250 g','Pied-de-biche;2 po;2,5 kg','Pierre à aiguiser;2 pc;500 g','Pioche de mineur;3 po;5 kg','Piton;1 pa;250 g','Plume d’écriture;1 pa;—','Pointe de fer;5 pc;500 g','Pot en fer;8 pa;2 kg','Poudre;1 pc;250 g','Rations de survie (par jour);5 pa;500 g1','Sablier (6 secondes);10 po;-','Sablier (1 minute);20 po;250 g','Sablier (1 heure);25 po;500 g','Sac (vide);1 pa;250 g1','Sac à dos (vide);2 po;1 kg1','Sac à dos de maître;50 po;2 kg1','Sacoche de ceinture (vide);1 po;0,5 kg1','Savon, 1 livre;5 pa;500 g','Seau (vide);5 pa;1 kg','Sifflet d\'alarme (ou silencieux);8 pa (9 pa);—','Silex et amorce;1 po;—','Tatouage;1 pc-20 po;—','Tente, petite;10 po;10 kg1','Tente, moyenne;15 po;15 kg1','Tente, grande;30 po;20 kg1','Tente, pavillon;100 po;50 kg1','Toile (le m2);1 pa;1 kg','Tonneau (vide);2 po;15 kg','Torche;1 pc;500 g','Veste barbelée;10 po;2 kg'];
+	
+	var disappointments =['https://cdn.discordapp.com/attachments/432458131826671617/432483774731649024/Grumpy_Cat_-_Disappointed.jpg', 'https://cdn.discordapp.com/attachments/239450783257460736/432486222825259028/sob.MP4']
+	
+	var imagesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg']
+	var videosExtensions = ['mp4', 'ogg', 'webm']
+	var videosType = ['video/mp4','video/ogg','video/webm']
+	
+	function gold(){
+		var roll = rand(3);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				result += 'Pièces';
+			break;
+			case 2:
+				var gemRoll = rand(100);
+				result += 'Gemme : '+gemTable[gemRoll][1][rand(gemTable[gemRoll][1].length,0)]+' '+gemTable[gemRoll][0];
+			break;
+			case 3:
+				var manaGemRoll = rand(100);
+				result += 'Gemme de mana '+manaGemTable[manaGemRoll][0]+' '+manaGemTable[manaGemRoll][1];
+			break;
+		}
+		return result+'</li>';
+	}
+	function decoObject(){
+		var roll = rand(5);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				result += 'Tableau';
+			break;
+			case 2:
+				result += 'Peinture';
+			break;
+			case 3:
+				result += 'Meuble';
+			break;
+			case 4:
+				result += 'Argenterie';
+			break;
+			case 5:
+				result += 'Instrument de musique';
+			break;
+		}
+		return result+'</li>';
+	}
+	function adventureObject(){
+		var roll = rand(2);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				var materialRoll = rand(material.length,0);
+				result += material[materialRoll].split(';')[0]+' '+material[materialRoll].split(';')[1]+' '+material[materialRoll].split(';')[2];
+			break;
+			case 2:
+				result += 'Documents divers';
+			break;
+		}
+		return result+'</li>';
+	}
+	function alchemyObject(){
+		var roll = rand(3);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				result += 'Plante Alchimique (Lvl 1-9)';
+			break;
+			case 2:
+				result += 'Engrai alchimique (Lvl 1-9)';
+			break;
+			case 3:
+				result += 'Objet d\'entretien (Lvl 5-9)';
+			break;
+		}
+		return result+'</li>';
+	}
+	function potions(){
+		var roll = rand(3);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				result += 'Puissance Faible (1 à 3)';
+			break;
+			case 2:
+				result += 'Puissance Moyenne (4 à 6)';
+			break;
+			case 3:
+				result += 'Puissance Supérieur (7 à 9)';
+			break;
+		}
+		return result+'</li>';
+	}
+	function scrolls(){
+		var roll = rand(3);
+		var result = '<li>'
+		switch(roll) {
+			case 1:
+				result += 'Puissance Faible (1 à 3)';
+			break;
+			case 2:
+				result += 'Puissance Moyenne (4 à 6)';
+			break;
+			case 3:
+				result += 'Puissance Supérieur (7 à 9)';
+			break;
+		}
+		return result+'</li>';
+	}
+	function weapon(){
+		var roll = rand(9);
+		var result = '<li>Arme ';
+		var typeRoll = 0;
+		var weapon = new Array();
+		var link = 'http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Armes%20magiques.ashx';
+		
+		switch(roll) {
+			case 1:
+				weapon = currentWeapon;
+				typeRoll = currentWeapon.length;//25;
+				result += 'Courante';
+			break;
+			case 2:
+				weapon = warWeapon;
+				typeRoll = warWeapon.length;//44;
+				result += ' de Guerre';
+			break;
+			case 3:
+				weapon = exotiqueWeapon;
+				typeRoll = exotiqueWeapon.length;//34;
+				result += 'Exotique';
+			break;
+			case 4:
+				weapon = orientalWarWeapon;
+				typeRoll = orientalWarWeapon.length;//23;
+				result += 'Orientale de guerre';
+			break;
+			case 5:
+				weapon = orientalExoticWeapon;
+				typeRoll = orientalExoticWeapon.length;//17;
+				result += 'Orientale exotique';
+			break;
+			case 6:
+				weapon = gladiatorWarWeapon;
+				typeRoll = gladiatorWarWeapon.length;//4;
+				result += 'de Gladiateur de guerre';
+			break;
+			case 7:
+				weapon = gladiatorExoticWeapon;
+				typeRoll = gladiatorExoticWeapon.length;//12;
+				result += 'de Gladiateur exotique';
+			break;
+			case 8:
+				weapon = fireWeapon;
+				typeRoll = fireWeapon.length;//21;
+				result += 'à feu';
+			break;
+			case 9:
+				weapon = ['Les armes magiques'];
+				typeRoll = 1;
+				result += 'spéciale';
+				link = 'http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Armes%20magiques.ashx'
+			break;
+		}
+		return result+' : <a href="'+link+'" target="_blank">'+weapon[rand(typeRoll,0)]+'</a></li>';
+	}
+	function armour(){
+		var roll = rand(5);
+		var result = '<li>Armure '
+		var typeRoll = 0;
+		var armour = new Array();
+		var link = 'http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Armures%20magiques.ashx';
+		
+		switch(roll) {
+			case 1:
+				armour = ligthArmour
+				typeRoll = ligthArmour.length;//11;
+				result += 'Légère';
+			break;
+			case 2:
+				armour = mediumArmour
+				typeRoll = mediumArmour.length;//12;
+				result += 'Intermédiaire';
+			break;
+			case 3:
+				armour = heavyArmour
+				typeRoll = heavyArmour.length;//12;
+				result += 'lourde';
+			break;
+			case 4:
+				armour = sheild
+				typeRoll = sheild.length;//10;
+				result = '<li>Bouclier';
+			break;
+			case 5:
+				armour = ['Les armures et boucliers magiques'];
+				typeRoll = 1;
+				result += 'spéciale';
+				link = 'http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Armures%20magiques.ashx';
+			break;
+		}
+		return result+' : <a href="'+link+'" target="_blank">'+armour[rand(typeRoll,0)]+'</a></li>';
+	}
+	function magicOject(){
+		var roll = rand(5);
+		var result = '<li>'
+		var typeRoll = 0;
+		switch(roll) {
+			case 1:
+				typeRoll = 100;
+				result += '<a href="http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Objets%20merveilleux.ashx#FAIBLE" target="_blank">Objet Magique Faible</a> n°'+Math.floor((Math.random() * typeRoll) + 1);
+			break;
+			case 2:
+				typeRoll = 100;
+				result += '<a href="http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Objets%20merveilleux.ashx#INTERMEDIAIRE" target="_blank">Objet Magique Intermédiaire</a> n°'+Math.floor((Math.random() * typeRoll) + 1);
+			break;
+			case 3:
+				typeRoll = 100;
+				result += '<a href="http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Objets%20merveilleux.ashx#PUISSANT" target="_blank">Objet Magique Puissant</a> n°'+Math.floor((Math.random() * typeRoll) + 1);
+			break;
+			case 4:
+				typeRoll = bodyPart.length;//12;
+				var bodyRoll = rand(typeRoll,0);
+				result += 'Partie du corps qui se met '+bodyPart[bodyRoll][0]+' <u>'+bodyPart[bodyRoll][1]+'</u>';
+			break;
+			case 5:
+				typeRoll = 100;
+				result += '<a href="http://www.pathfinder-fr.org/Wiki/Pathfinder-RPG.Objets%20merveilleux%20APG.ashx#FAIBLE" target="_blank">Autres n°'+rand(typeRoll,0)+'</a>';
+			break;
+		}
+		return result+'</li>';
+	}
+	function specialObject(){
+	
+		return '<li>Tokubetsu itemu</li>';
+	}
+	
+	function generate(){
+		var nRand = document.getElementById('nbLoot').value;
+		if(parseInt(nRand) < 0||parseInt(nRand) == 0||nRand == ''){
+			document.getElementById('result').innerHTML = '<div class="baka">Baka nano ?</div>';
+			return;
+		}
+		var nbLoot = rand(parseInt(nRand)+1,0);
+		var rolls = {};
+		var divResult = document.getElementById('result');
+		var result = '<h3>'+nbLoot+' '+(nbLoot > 1 ? 'Loots' : 'Loot')+'</h3>';
+		
+		for(var i = 0; i < nbLoot; i++) {
+			var roll = rand(100);
+			if(typeof rolls[lootTable[roll][0]] !== 'undefined'){
+				rolls[lootTable[roll][0]].loots += eval(lootTable[roll][1])();
+			}else{
+				rolls[lootTable[roll][0]] = {'loots':eval(lootTable[roll][1])(),'css':lootTable[roll][1]}
+			}
+		}
+		var loots = Object.keys(rolls);
+		for(var j = 0, k = loots.length; j < k; j++) {
+			result += '<div class = "'+rolls[loots[j]].css+'" ><h4>'+loots[j]+':</h4><ul class="dash">'+rolls[loots[j]].loots+"</ul></div>";
+		}
+		
+		if(loots.length == 0){
+			var nope = rand(disappointments.length,0);
+			for(var i = 0, j = videosExtensions.length; i<j;i++ )
+			if(disappointments[nope].toLowerCase().includes(videosExtensions[i],disappointments[nope].lastIndexOf("."))){
+				result += '<video width="320" height="240" autoplay loop> <source src="'+disappointments[nope]+'" type="'+videosType[i]+'"> </video>'
+			}
+			else if(disappointments[nope].toLowerCase().includes(imagesExtensions[i],disappointments[nope].lastIndexOf(".")))
+			{
+				result += '<img src="'+disappointments[nope]+'"/>'
+			}
+		}
+		document.getElementById('result').innerHTML = result;
+	}
+	</script>
+	</body>
+</html>
